@@ -1,5 +1,5 @@
 var server = require('ws').Server;
-var s = new server({port: 5001});
+var s = new server({port: process.env.PORT || 3000});
 var history = [];
 
 
