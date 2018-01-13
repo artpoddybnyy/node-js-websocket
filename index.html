@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<input type="text" id="lat">
+<input type="text" id="lng">
+<button id="btn">send</button>
+
+<div id="message-body"></div>
+
+<script language="javascript" type="text/javascript">
+
+    var wsUri = "ws://localhost:5001";
+     var websocket = new WebSocket(wsUri);
+
+
+//    websocket.onopen = function(evt) {
+//        console.log(evt);
+//    };
+
+    var messageBody = document.getElementById('message-body');
+    websocket.onmessage = function(evt) {
+        let parse = JSON.parse(evt.data);
+        console.log(parse);
+        for (var i = 0; i < parse.length; i++) {
+            var parseArr = JSON.parse(parse[i]);
+            createDome(parseArr);
+        }
+        if (typeof parse === "object") {
+            createDome(parse);
+        }
+    };
+
+    function createDome(parse) {
+        console.log(parse);
+        let div = document.createElement('div');
+        let d = document.createElement('span');
+        let m = document.createElement('span');
+
+        div.innerText = '--------------------------------------';
+        d.innerText = parse.nick + '-' ;
+        m.innerText = parse.msg;
+
+        messageBody.insertBefore(m, messageBody.childNodes[0]);
+        messageBody.insertBefore(d, messageBody.childNodes[0]);
+        messageBody.insertBefore(div, messageBody.childNodes[0]);
+    }
+
+
+    document.getElementById('btn').onclick = function () {
+        var lat = document.getElementById('lat').value;
+        var lng = document.getElementById('lng').value;
+        websocket.send(JSON.stringify({nick: lat, msg: lng }))
+    };
+
+
+
+
+</script>
+
+</body>
+</html>
